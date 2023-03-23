@@ -20,38 +20,46 @@ public class MainPage {
         this.driver = driver;
     }
 
-    // Elements & locators
+    // Локаторы кнопок с вопросами
+    public static final String[] accordionItem = new String[]{
+            "accordion__heading-0",
+            "accordion__heading-1",
+            "accordion__heading-2",
+            "accordion__heading-3",
+            "accordion__heading-4",
+            "accordion__heading-5",
+            "accordion__heading-6",
+            "accordion__heading-7"};
+    //Локаторы текстов "Вопросы о важном
+    public static final String[]  openPanel = new String[]{
+            "accordion__panel-0",
+            "accordion__panel-1",
+            "accordion__panel-2",
+            "accordion__panel-3",
+            "accordion__panel-4",
+            "accordion__panel-5",
+            "accordion__panel-6",
+            "accordion__panel-7"};
 
-    private static final String url = "https://qa-scooter.praktikum-services.ru/";
-    private static final By accordionItem =
-            By.xpath(".//div[@data-accordion-component='AccordionItem']");
-    private static final By openPanel =
-            By.xpath(".//div[@data-accordion-component='AccordionItemPanel']");
+    //Локатор для кнопки вверху экрана
     private static final By buttonOrderOne =
             By.xpath(".//div[@class='Header_Nav__AGCXC']/button[text()='Заказать']");
+
+    //Локатор для кнопки вверху экрана
     private static final By buttonOrderTwo=
             By.xpath(".//div[@class='Home_FinishButton__1_cWm']/button[text()='Заказать']");
 
-    // actions
-    public MainPage open() {
-        driver.get(url);
-        return this;
+
+    public void scrollPageToQuestionsAboutImportant(){
+        WebElement lastQuestionArrow = driver.findElement(By.id(accordionItem[7]));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", lastQuestionArrow);
     }
 
-
-    public MainPage clickDropDown_checkTextAfterClick(String[] expectedTextAfterDropdown) {
-        List<WebElement> webElements =
-                driver.findElements(accordionItem);
-        for (int i = 0; i < webElements.size(); i++) {
-            WebElement button = webElements.get(i);
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", button);
-            button.click();
-            new WebDriverWait(driver, 5).until(ExpectedConditions
-                    .elementToBeClickable(button.findElement(openPanel)));
-            String actualTextAfterDropdown = button.findElement(openPanel).getText();
-            Assert.assertEquals(expectedTextAfterDropdown[i], actualTextAfterDropdown);
-        }
-        return this;
+    //Клик по кнопке вопроса
+    public void pushQuestionButton(String questionButtonLocator) {
+        new WebDriverWait(driver, 5)
+                .until(ExpectedConditions.elementToBeClickable(By.id(questionButtonLocator)));
+        driver.findElement(By.id(questionButtonLocator)).click();
     }
 
     public MainPage scooterButtonOrderOne(){
@@ -63,7 +71,7 @@ public class MainPage {
         return this;
     }
 
-    public MainPage checkCookeIsDisplayed(){
+        public MainPage checkCookeIsDisplayed(){
         if (driver.findElement(cookeButton).isDisplayed()){
             driver.findElement(cookeButton).click();
         }
